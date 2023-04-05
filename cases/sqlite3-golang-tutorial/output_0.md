@@ -1,75 +1,77 @@
-To write a simple query and run an insert using `github.com/mattn/go-sqlite3`, the following steps need to be taken:
+To use the `github.com/mattn/go-sqlite3` package, you need to first import it into your Go code. Here's a simple code to query and insert data.
 
-1. Import the required packages for SQLite3 and database access:
 ```go
+package main
+
 import (
-    "database/sql"
-    "fmt"
-    "log"
-    _ "github.com/mattn/go-sqlite3"
+	"database/sql"
+	"fmt"
+	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
-```
 
-2. Open a database connection using `sql.Open` which takes two arguments, the driver name and the data source name (DSN). In this case, we are using a file-based database, so the DSN is just the file path where our database file will be stored.
+func main() {
+	// Open database connection
+	db, err := sql.Open("sqlite3", "./example.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
-```go
-db, err := sql.Open("sqlite3", "./example.db")
-if err != nil {
-    log.Fatal(err)
-} 
-defer db.Close()
-```
+	// Create table
+	createTableSQL := `CREATE TABLE IF NOT EXISTS users (
+		"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+		"name" TEXT,
+		"email" TEXT)`
+	_, err = db.Exec(createTableSQL)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-3. Create a table in the database using `db.Exec`. In this example, we are creating a `users` table with columns `id`, `name`, and `email`.
+	// Insert data
+	insertSQL := `INSERT INTO users(name, email) VALUES(?, ?)`
+	res, err := db.Exec(insertSQL, "John Doe", "johndoe@example.com")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-```go
-sqlStmt := `
-    CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        email TEXT
-    );
-`
-_, err = db.Exec(sqlStmt)
-if err != nil {
-    log.Printf("%q: %s\n", err, sqlStmt)
-    return
+	// Get last inserted ID
+	id, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Last inserted ID: %d\n", id)
+
+	// Query data
+	querySQL := `SELECT * FROM users`
+	rows, err := db.Query(querySQL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	// Iterate over rows
+	for rows.Next() {
+		var id int
+		var name, email string
+		err := rows.Scan(&id, &name, &email)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("id: %d, name: %s, email: %s\n", id, name, email)
+	}
 }
 ```
 
-4. Insert some rows into the `users` table using `db.Exec`. In this example, we are inserting two rows.
+In this example, we first import the necessary packages including `database/sql` and `github.com/mattn/go-sqlite3`. 
 
-```go
-sqlStmt := `
-    INSERT INTO users(name, email) VALUES
-        ('John Doe', 'john.doe@example.com'),
-        ('Jane Doe', 'jane.doe@example.com');
-`
-_, err = db.Exec(sqlStmt)
-if err != nil {
-    log.Printf("%q: %s\n", err, sqlStmt)
-    return
-}
-```
+Then, the database connection is opened and the `CREATE TABLE` statement is executed to create a `users` table with columns `id`, `name`, and `email`. The `IF NOT EXISTS` clause makes sure that the table is not created again if it already exists.
 
-5. Query the rows using `db.Query` and iterate over the results:
+Next, we execute an `INSERT INTO` statement to insert a new user into the `users` table. We use prepared statements and placeholders (`?`) to avoid SQL injection attacks. We also use `db.Exec` instead of `db.Query` since we are not expecting any rows back from the database.
 
-```go
-rows, err := db.Query("SELECT id, name, email FROM users")
-if err != nil {
-    log.Fatal(err)
-}
-defer rows.Close()
-for rows.Next() {
-    var id int
-    var name string
-    var email string
-    err := rows.Scan(&id, &name, &email)
-    if err != nil {
-        log.Fatal(err)
-    }
-    fmt.Printf("id=%d, name=%s, email=%s\n", id, name, email)
-}
-```
+The `LastInsertId` method is used to get the ID of the last inserted row. 
 
-The above code will create a SQLite database file (if it doesn't exist) called `example.db`, create a `users` table in the database, insert two rows into the `users` table, and then query the rows and print out the results.
+Finally, we execute a `SELECT` statement using `db.Query` to retrieve all data from the `users` table. We use `rows.Scan` to retrieve each row's `id`, `name`, and `email` columns from the `rows` result set, and we print them out to the console.
+
+That's it! This is a simple example of how to use `github.com/mattn/go-sqlite3` to query and insert data into a SQLite database with Go.
