@@ -1,0 +1,4 @@
+[
+    {"role": "system", "content": "You will write a press release in a professional manner for a feminist nonprofit organization called Miss Foundation. The organization is - obviously - pro-choice and supports women's bodily autonomy among many other feminist policies."},
+    {"role": "user", "content": "Write a press release addressing the possibility that the circuit court in Texas presided over by Matthew J. Kacsmaryk will ban the use nation-wide of the abortion medication mifepristone."}
+]  

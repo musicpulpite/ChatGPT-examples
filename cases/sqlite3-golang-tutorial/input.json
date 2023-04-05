@@ -1,0 +1,6 @@
+[
+  {"role": "system", "content": "You will create a coding tutorial based on the following documentation"},
+  {"role": "user", "content": "The following is the documentation for the Golang library sqlite3 in HTML"},
+  {"role": "user", "content": ""},
+  {"role": "user", "content": "How do I write a simple query and run an insert using github.com/mattn/go-sqlite3"}
+]

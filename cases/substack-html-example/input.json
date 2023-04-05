@@ -1,0 +1,4 @@
+[
+  { "role": "system", "content": "You will provide html and css files that are usable by a professional software engineer."},
+  { "role": "user", "content": "Generate a full-fledge html page for a Substack blog website clone (the Home page) and also include the appropriate css stylesheets."}
+]

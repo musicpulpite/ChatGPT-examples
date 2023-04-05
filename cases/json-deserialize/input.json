@@ -1,0 +1,4 @@
+[
+    {"role": "system", "content": "You will demonstrate and explain the optimal solution to the following coding exercise."},
+    {"role": "user", "content": "Demonstrate how to parse a well-formatted json string and return the corresponding dictionary using Python but without using any built-in libraries."}
+]  
