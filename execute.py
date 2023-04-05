@@ -1,7 +1,7 @@
 import os
 import argparse
 import json
-from multiprocessing import Process
+from multiprocessing import Pool
 
 # Note: you need to be using OpenAI Python v0.27.0 for the code below to work
 import openai
@@ -17,13 +17,7 @@ def execute_case(case_directory):
       model="gpt-3.5-turbo",
       messages=input_messages
     )
-    json_object = json.dumps(response, indent=4)
-
-    with open(f'cases/{case_directory}/output_complete.json', "w") as outfile:
-      outfile.write(json_object)
-    for idx, choice in enumerate(response["choices"]):
-      with open(f'cases/{case_directory}/output_{idx}.md', "w") as outfile:
-        outfile.write(choice["message"]["content"])
+    return response
 
 def main():
   parser = argparse.ArgumentParser("Execute and record ChatGPT examples")
@@ -32,7 +26,7 @@ def main():
   example_case = args.case
 
   case_directories = []
-  all_case_directories = os.listdir('cases')
+  all_case_directories = [c for c in os.listdir('cases') if os.path.isdir(f'cases/{c}')]
   if example_case is None:
     case_directories = all_case_directories
   else:
@@ -40,11 +34,20 @@ def main():
       case_directories = [example_case]
     else:
       raise Exception('specified case does not exist')
+  
+  print(f'Executing {len(case_directories)} cases: {case_directories}')
     
-  for case_directory in case_directories:
-    p = Process(target=execute_case, args=(case_directory,))
-    p.start()
-    p.join()
+  with Pool(len(case_directories)) as pool:
+    responses = pool.map(execute_case, case_directories)
+
+  for idx, case_directory in enumerate(case_directories):
+      response = responses[idx]
+      with open(f'cases/{case_directory}/output_complete.json', "w") as outfile:
+        response_json = json.dumps(response, indent=4)
+        outfile.write(response_json)
+      for idx, choice in enumerate(response["choices"]):
+        with open(f'cases/{case_directory}/output_{idx}.md', "w") as outfile:
+          outfile.write(choice["message"]["content"])
 
 
 
