@@ -1,0 +1,5 @@
+[
+    { "role": "system", "content": "You will provide example code that is usable by a professional software engineer."},
+    { "role": "user", "content": "Provide an example of how to use the esm npm package to run an npm predev script that executes a esm module using top-level await. This esm module also imports the aws-sdk s3 client to fetch from an s3 bucket."},
+    { "role": "user", "content": "This script uses authentication credentials from the result of `aws sso login`. Provide guidance on how to set up the aws-sdk to use these credentials."}
+  ]

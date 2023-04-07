@@ -1,0 +1,21 @@
+{
+    "id": "chatcmpl-72k2AyOxlPw54UFgmf8c23bfBxFb2",
+    "object": "chat.completion",
+    "created": 1680887966,
+    "model": "gpt-3.5-turbo-0301",
+    "usage": {
+        "prompt_tokens": 81,
+        "completion_tokens": 312,
+        "total_tokens": 393
+    },
+    "choices": [
+        {
+            "message": {
+                "role": "assistant",
+                "content": "```\n/**\n * Parses an env file string and returns a map of key-value pairs.\n * Comments directly above the env var declaration are preserved.\n *\n * @param {string} envString - The env file string to parse.\n * @returns {Map<string, string>} - A map of env variable keys and values.\n */\nfunction parseEnvString(envString) {\n  const envMap = new Map();\n  const lines = envString.split('\\n');\n  let currentComment = '';\n\n  for (const line of lines) {\n    // Check if this line is a comment, and update currentComment accordingly\n    if (line.startsWith('#')) {\n      currentComment = line.trim();\n      continue;\n    }\n\n    // If this line is not a comment, parse it as an env var\n    const [key, value] = line.split('=');\n    if (key && value) {\n      envMap.set(key.trim(), { value: value.trim(), comment: currentComment });\n      currentComment = ''; // Reset currentComment for next env var\n    }\n  }\n\n  return envMap;\n}\n```\n\nExample usage:\n```\nconst envString = `\n# This is a comment\nFOO=bar # This is another comment\nBAZ=qux`;\n\nconst envMap = parseEnvString(envString);\nconsole.log(envMap.get('FOO')); // { value: 'bar', comment: '# This is a comment' }\nconsole.log(envMap.get('BAZ')); // { value: 'qux', comment: ''}\n```"
+            },
+            "finish_reason": "stop",
+            "index": 0
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "id": "chatcmpl-72ilC96YTec10tGovttcC8sLBmBR1",
+    "object": "chat.completion",
+    "created": 1680883070,
+    "model": "gpt-3.5-turbo-0301",
+    "usage": {
+        "prompt_tokens": 112,
+        "completion_tokens": 533,
+        "total_tokens": 645
+    },
+    "choices": [
+        {
+            "message": {
+                "role": "assistant",
+                "content": "Here's an example of how to use the `esm` npm package to execute an ES module with top-level await that imports the `aws-sdk` S3 client to fetch from an S3 bucket:\n\nFirst, install the `esm` npm package and the `aws-sdk` npm package:\n\n```\nnpm install esm aws-sdk\n```\n\nNext, create an ES module that imports the `aws-sdk` S3 client and fetches an object from an S3 bucket:\n\n```js\n// s3-fetch.js\n\nimport AWS from 'aws-sdk';\n\nconst s3 = new AWS.S3();\n\nexport const getObjectFromS3 = async (bucket, key) => {\n  const params = {\n    Bucket: bucket,\n    Key: key,\n  };\n  const data = await s3.getObject(params).promise();\n  return data.Body.toString('utf-8');\n};\n```\n\nThe `getObjectFromS3` function takes two parameters, the name of the S3 bucket and the key of the object to fetch. It returns a promise that resolves with the body of the fetched object as a string.\n\nNow, create a predev script in your `package.json` that executes the ES module with top-level await using the `esm` package:\n\n```json\n{\n  \"scripts\": {\n    \"predev\": \"node -r esm s3-fetch.js\"\n  }\n}\n```\n\nThe `-r esm` option tells Node.js to use the `esm` package to load and execute the module.\n\nFinally, to use the authentication credentials from the result of `aws sso login`, configure the `AWS` object with the credentials:\n\n```js\n// index.js\n\nimport AWS from 'aws-sdk';\nimport { getObjectFromS3 } from './s3-fetch.js';\n\n// Configure AWS with the credentials from `aws sso login`\nAWS.config.credentials = new AWS.ProcessCredentials({\n  roleArn: '<SSO_ROLE_ARN>',\n  webIdentityToken: '<SSO_ACCESS_TOKEN>',\n  region: '<AWS_REGION>'\n});\n\n(async () => {\n  // Fetch the object from the S3 bucket\n  const bucket = 'my-bucket';\n  const key = 'path/to/object.txt';\n  const data = await getObjectFromS3(bucket, key);\n  console.log(data);\n})();\n```\n\nReplace `<SSO_ROLE_ARN>`, `<SSO_ACCESS_TOKEN>`, and `<AWS_REGION>` with the appropriate values from the output of `aws sso login`.\n\nThis example code can be used by a professional software engineer and can be easily extended to use different AWS SDK services and methods."
+            },
+            "finish_reason": "stop",
+            "index": 0
+        }
+    ]
+}

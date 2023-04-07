@@ -1,0 +1,4 @@
+[
+    { "role": "system", "content": "You will provide example code that is usable by a professional software engineer."},
+    { "role": "user", "content": "Implement a helper function written in Javascript that takes in an env file as a string input and converts it to a map where the keys are the env variable keys and the values are the env values. This helper function should also preserve any comment lines directly above each env var declaration"}
+  ]
