@@ -1,0 +1,21 @@
+{
+    "id": "chatcmpl-72pGSXTZqhFGdN46YR48XTunYhlug",
+    "object": "chat.completion",
+    "created": 1680908072,
+    "model": "gpt-3.5-turbo-0301",
+    "usage": {
+        "prompt_tokens": 66,
+        "completion_tokens": 301,
+        "total_tokens": 367
+    },
+    "choices": [
+        {
+            "message": {
+                "role": "assistant",
+                "content": "Sure, here's an example code that prompts the user for input using prompt_toolkit library in Python, and allows editing of default value:\n\n```python\nfrom prompt_toolkit import prompt, PromptSession\n\n# create a PromptSession object\nsession = PromptSession()\n\n# Set default value for the prompt\ndefault_value = \"default_value\"\n\n# Use the prompt function to get input. Set the default value and insert cursor before it\nuser_input = session.prompt(f\"Enter Input: \", default=default_value, default_text_before_cursor = True)\n\n# Print the entered input\nprint(f\"You entered: {user_input}\")\n```\n\nIn this code, we first import `prompt` and `PromptSession` from the `prompt_toolkit` library. We then store a `PromptSession` object in the `session` variable.\n\nWe set a default value for the prompt in the `default_value` variable. The `prompt` function is used to get input from the user with a prompt message of \"Enter Input:\". We pass the `default` parameter to the `prompt` function with the `default_value` variable, so that the default value is displayed on the prompt. We also set the `default_text_before_cursor` parameter to `True` so that the cursor is placed before the default value, allowing the user to edit it if necessary.\n\nFinally, we print the entered input with a message \"You entered: \".\n\nYou can run this script from the command line and try it out."
+            },
+            "finish_reason": "stop",
+            "index": 0
+        }
+    ]
+}

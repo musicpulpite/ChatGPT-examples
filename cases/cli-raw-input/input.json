@@ -1,0 +1,4 @@
+[
+  {"role": "system", "content": "provide a working code example for a professional software engineer."},
+  {"role": "user", "content": "Show how to write a python script that prompts the user for input from the command line using prompt_toolkit. However, the prompt should have a default value that can be edited by the user before hitting return."}
+]

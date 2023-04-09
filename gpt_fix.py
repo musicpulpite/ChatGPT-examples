@@ -1,10 +1,13 @@
+#!/usr/bin/env python3
+
 import os
 import argparse
 import json
 
 # Note: you need to be using OpenAI Python v0.27.0 for the code below to work
 import openai
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
+from prompt_toolkit import prompt as pt_prompt
 
 init(autoreset=True)
 
@@ -19,6 +22,12 @@ def build_prompt(lines):
         *[{"role": "user", "content": line} for line in lines],
     ]
     return prompt
+
+def clean_response(res):
+    try:
+        return res[res.index("{"):res.rindex("}")+1]
+    except:
+        return res
 
 global corrected_command
 global verbose
@@ -43,7 +52,7 @@ def main():
 
     with open(histfile_path, "r") as f:
         lines = f.readlines()
-        lines = lines[0:min(len(lines), 10)]
+        lines = [line.rstrip("\\\n").strip() for line in lines[0:min(len(lines), 10)]]
         log("History: " + str(lines))
         prompt = build_prompt(lines)
         try:
@@ -52,16 +61,22 @@ def main():
                 messages=prompt
             )
             corrected_command = response["choices"][0]["message"]["content"]
-            corrected_command = json.loads(corrected_command)  
+            corrected_command = clean_response(corrected_command)
+            log(corrected_command)
+            try:
+                corrected_command = json.loads(corrected_command)
+            except:
+                print(Fore.YELLOW + corrected_command)
         except Exception as e:
-            print("Error while calling OpenAI API")
+            print("Error while calling OpenAI API: ", e)
 
-        print(corrected_command["command"], Style.DIM + f'({corrected_command["reason"]})' + Style.RESET_ALL, end="")
         try:
-            input()
+            # print(corrected_command["command"], Style.DIM + f'({corrected_command["reason"]})' + Style.RESET_ALL, end="")
+            amended_command = pt_prompt("Fix: ", default=corrected_command["command"], default_text_before_cursor=True)
+            print(Fore.RED + "here")
+            os.system(amended_command)
         except:
             return
-        os.system(corrected_command["command"])
 
 if __name__ == "__main__":
     main()
